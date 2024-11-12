@@ -1,0 +1,9 @@
+fastapi==0.104.1
+uvicorn==0.24.0
+pandas==2.1.3
+akshare==1.11.10
+python-dotenv==1.0.0
+# pydantic==2.5.1
+pydantic==2.5.1
+pydantic-core==2.14.3  # 改为2.14.3以匹配pydantic 2.5.1的依赖要求
+# pydantic-core==2.14.6
