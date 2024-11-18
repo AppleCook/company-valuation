@@ -19,6 +19,7 @@ const ValuationCalculator = () => {
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log('handleSubmit');
     e.preventDefault();
     setLoading(true);
     setError(null);

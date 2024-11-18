@@ -1,8 +1,4 @@
-// TODO
-const isLocal = false;
-const API_BASE_URL = !isLocal 
-  ? '//guibugui.cn' 
-  : 'http://localhost:8000';
+const API_BASE_URL = 'http://0.0.0.0:8000';
 
 export interface ValuationRequest {
   company_name: string;
@@ -24,7 +20,6 @@ export interface ValuationResult {
 }
 
 export async function calculateValuation(data: ValuationRequest): Promise<ValuationResult> {
-  console.log('calculateValuation:', API_BASE_URL);
   try {
     console.log('Sending request:', data);
     const response = await fetch(`${API_BASE_URL}/api/calculate-valuation`, {
