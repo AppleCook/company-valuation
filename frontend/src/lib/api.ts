@@ -1,5 +1,5 @@
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://guibugui.cn' 
+  ? '//guibugui.cn' 
   : 'http://localhost:8000';
 
 export interface ValuationRequest {
