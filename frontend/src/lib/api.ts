@@ -24,6 +24,7 @@ export interface ValuationResult {
 }
 
 export async function calculateValuation(data: ValuationRequest): Promise<ValuationResult> {
+  console.log('calculateValuation:', API_BASE_URL);
   try {
     console.log('Sending request:', data);
     const response = await fetch(`${API_BASE_URL}/api/calculate-valuation`, {
