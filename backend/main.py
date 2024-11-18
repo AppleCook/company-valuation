@@ -78,6 +78,15 @@ async def health_check():
 if __name__ == "__main__":
     import uvicorn
     import logging
+    # 配置参数
+    CERT_PATH = "/etc/letsencrypt/live/guibugui.cn/fullchain.pem"  # SSL 证书路径
+    KEY_PATH = "/etc/letsencrypt/live/guibugui.cn/privkey.pem"     # 私钥路径
+    ALLOWED_HOSTS = ["guibugui.cn", "localhost", "127.0.0.1"]
+    ALLOWED_ORIGINS = [
+        "https://guibugui.cn",
+        "https://www.guibugui.cn",
+        "http://localhost:3000",
+    ]
     
     # 配置日志
     logging.basicConfig(level=logging.INFO)
