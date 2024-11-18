@@ -1,4 +1,6 @@
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
+// TODO
+const isLocal = false;
+const API_BASE_URL = !isLocal 
   ? '//guibugui.cn' 
   : 'http://localhost:8000';
 
