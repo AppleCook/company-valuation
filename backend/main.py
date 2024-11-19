@@ -9,8 +9,10 @@ app = FastAPI(title="Company Valuation API")
 
 origins = [
     "http://localhost:3000",    # Next.js 开发服务器
-    "http://localhost:3001",    # 其他可能的前端地址
-    "http://127.0.0.1:3000"    # 使用 IP 地址访问的情况
+    "http://127.0.0.1:3000",    # 使用 IP 地址访问的情况
+    "https://guibugui.cn",
+    "https://www.guibugui.cn",
+    "47.109.207.199"
 ]
 
 # 更新 CORS 配置
