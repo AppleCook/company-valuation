@@ -40,6 +40,15 @@ const ValuationCalculator = () => {
   const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
+    // 添加 GA 事件跟踪
+    // @ts-ignore
+    window.gtag?.('event', 'calculate_valuation', {
+      company_name: formData.companyName,
+      years: formData.years,
+      growth_rate: formData.growthRate,
+      discount_rate: formData.discountRate
+    });
+
     // 验证输入值
     if (!formData.companyName.trim()) {
       setError('请输入公司名称');
