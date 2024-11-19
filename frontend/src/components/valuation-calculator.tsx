@@ -41,7 +41,7 @@ const ValuationCalculator = () => {
     e.preventDefault();
     
     // 添加 GA 事件跟踪
-    // @ts-ignore
+    // @ts-expect-error - window.gtag 在运行时由 GA 脚本添加
     window.gtag?.('event', 'calculate_valuation', {
       company_name: formData.companyName,
       years: formData.years,
