@@ -1,68 +1,111 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { calculateValuation, type ValuationResult } from '@/lib/api';
 
+interface FormData {
+  companyName: string;
+  years: string;
+  growthRate: string;
+  discountRate: string;
+}
+
+const initialFormData: FormData = {
+  companyName: '',
+  years: '10',
+  growthRate: '15',
+  discountRate: '3'
+};
+
 const ValuationCalculator = () => {
-  const [formData, setFormData] = useState({
-    companyName: '',
-    years: '10',        // 改为字符串类型
-    growthRate: '15',   // 改为字符串类型
-    discountRate: '3'   // 改为字符串类型
-  });
+  const [formData, setFormData] = useState<FormData>(initialFormData);
   const [result, setResult] = useState<ValuationResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    console.log('handleSubmit');
+  const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
+    console.log('Form submission started');
     e.preventDefault();
+    
+    // 验证输入值
+    if (!formData.companyName.trim()) {
+      setError('请输入公司名称');
+      return;
+    }
+
+    const years = parseInt(formData.years);
+    const growthRate = parseFloat(formData.growthRate);
+    const discountRate = parseFloat(formData.discountRate);
+
+    if (isNaN(years) || years <= 0) {
+      setError('请输入有效的预测年数');
+      return;
+    }
+
+    if (isNaN(growthRate)) {
+      setError('请输入有效的增长率');
+      return;
+    }
+
+    if (isNaN(discountRate)) {
+      setError('请输入有效的折现率');
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const result = await calculateValuation({
+      console.log('Calling calculateValuation with:', {
         company_name: formData.companyName,
-        years: parseInt(formData.years),
-        growth_rate: parseFloat(formData.growthRate),
-        discount_rate: parseFloat(formData.discountRate)
+        years,
+        growth_rate: growthRate,
+        discount_rate: discountRate
       });
-      setResult(result);
+
+      const calculationResult = await calculateValuation({
+        company_name: formData.companyName,
+        years,
+        growth_rate: growthRate,
+        discount_rate: discountRate
+      });
+
+      console.log('Calculation result:', calculationResult);
+      setResult(calculationResult);
     } catch (err) {
+      console.error('Calculation error:', err);
       setError(err instanceof Error ? err.message : '计算估值时发生错误');
     } finally {
       setLoading(false);
     }
-  };
+  }, [formData]);
 
-  const formatNumber = (number: number) => {
-    // alert(number)
+  const formatNumber = useCallback((number: number) => {
     if (number >= 10000) {
       return `${(number / 100000000).toFixed(2)}亿`;
-    } else {
-      return `${number.toFixed(2)}亿`;
     }
-  };
+    return `${number.toFixed(2)}亿`;
+  }, []);
 
-  const handleInputChange = (
+  const handleInputChange = useCallback((
     e: React.ChangeEvent<HTMLInputElement>,
-    field: 'companyName' | 'years' | 'growthRate' | 'discountRate'
+    field: keyof FormData
   ) => {
     const value = e.target.value;
     
-    // 数字输入验证
     if (field !== 'companyName') {
-      if (value === '' || !isNaN(Number(value))) {
+      // 数字输入验证（允许空值和有效数字）
+      if (value === '' || (/^\d*\.?\d*$/.test(value) && !isNaN(Number(value)))) {
         setFormData(prev => ({ ...prev, [field]: value }));
       }
     } else {
       setFormData(prev => ({ ...prev, [field]: value }));
     }
-  };
+  }, []);
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
@@ -70,7 +113,11 @@ const ValuationCalculator = () => {
         <CardTitle>公司估值计算器</CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form 
+          onSubmit={handleSubmit} 
+          className="space-y-4"
+          action="javascript:void(0)"
+        >
           <div className="space-y-2">
             <label className="text-sm font-medium">公司名称</label>
             <Input
@@ -91,6 +138,8 @@ const ValuationCalculator = () => {
                 onChange={(e) => handleInputChange(e, 'years')}
                 placeholder="10"
                 required
+                min="1"
+                pattern="\d*"
               />
             </div>
             
@@ -117,7 +166,12 @@ const ValuationCalculator = () => {
             </div>
           </div>
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button 
+            type="submit" 
+            className="w-full" 
+            disabled={loading}
+            onClick={() => console.log('Button clicked')}
+          >
             {loading ? '计算中...' : '计算估值'}
           </Button>
         </form>
