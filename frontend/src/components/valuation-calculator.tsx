@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { calculateValuation, type ValuationResult } from '@/lib/api';
+import { SelectWrapper } from './select-wrapper';
+import { stockList } from '@/components/company';
 
 interface FormData {
   companyName: string;
@@ -21,14 +23,21 @@ const initialFormData: FormData = {
   discountRate: '3'
 };
 
+// 假设这是你的 A 股上市公司名称字典
+const companyNames = stockList;
+
 const ValuationCalculator = () => {
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [result, setResult] = useState<ValuationResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    // 仅在客户端执行的逻辑
+    console.log('Component mounted on client');
+  }, []);
+
   const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
-    console.log('Form submission started');
     e.preventDefault();
     
     // 验证输入值
@@ -60,13 +69,6 @@ const ValuationCalculator = () => {
     setError(null);
 
     try {
-      console.log('Calling calculateValuation with:', {
-        company_name: formData.companyName,
-        years,
-        growth_rate: growthRate,
-        discount_rate: discountRate
-      });
-
       const calculationResult = await calculateValuation({
         company_name: formData.companyName,
         years,
@@ -74,10 +76,8 @@ const ValuationCalculator = () => {
         discount_rate: discountRate
       });
 
-      console.log('Calculation result:', calculationResult);
       setResult(calculationResult);
     } catch (err) {
-      console.error('Calculation error:', err);
       setError(err instanceof Error ? err.message : '计算估值时发生错误');
     } finally {
       setLoading(false);
@@ -96,127 +96,135 @@ const ValuationCalculator = () => {
     field: keyof FormData
   ) => {
     const value = e.target.value;
-    
-    if (field !== 'companyName') {
-      // 数字输入验证（允许空值和有效数字）
-      if (value === '' || (/^\d*\.?\d*$/.test(value) && !isNaN(Number(value)))) {
-        setFormData(prev => ({ ...prev, [field]: value }));
-      }
-    } else {
+    if (field === 'companyName' || value === '' || (/^\d*\.?\d*$/.test(value) && !isNaN(Number(value)))) {
       setFormData(prev => ({ ...prev, [field]: value }));
     }
   }, []);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleCompanyNameChange = useCallback((selectedOption: any) => {
+    setFormData(prev => ({
+      ...prev,
+      companyName: selectedOption ? selectedOption.value : ''
+    }));
+  }, []);
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle>公司估值计算器</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form 
-          onSubmit={handleSubmit} 
-          className="space-y-4"
-          action="javascript:void(0)"
-        >
-          <div className="space-y-2">
-            <label className="text-sm font-medium">公司名称</label>
-            <Input
-              type="text"
-              value={formData.companyName}
-              onChange={(e) => handleInputChange(e, 'companyName')}
-              placeholder="请输入公司名称（如：贵州茅台）"
-              required
-            />
-          </div>
-          
-          <div className="grid grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">预测年数</label>
-              <Input
-                type="text"
-                value={formData.years}
-                onChange={(e) => handleInputChange(e, 'years')}
-                placeholder="10"
-                required
-                min="1"
-                pattern="\d*"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="text-sm font-medium">增长率(%)</label>
-              <Input
-                type="text"
-                value={formData.growthRate}
-                onChange={(e) => handleInputChange(e, 'growthRate')}
-                placeholder="15"
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="text-sm font-medium">折现率(%)</label>
-              <Input
-                type="text"
-                value={formData.discountRate}
-                onChange={(e) => handleInputChange(e, 'discountRate')}
-                placeholder="3"
-                required
-              />
-            </div>
-          </div>
-
-          <Button 
-            type="submit" 
-            className="w-full" 
-            disabled={loading}
-            onClick={() => console.log('Button clicked')}
+    <div className="flex flex-col min-h-screen">
+      <Card className="w-full max-w-2xl mx-auto">
+        <CardHeader>
+          <CardTitle>公司估值计算器</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form 
+            onSubmit={handleSubmit} 
+            className="space-y-4"
+            action="javascript:void(0)"
           >
-            {loading ? '计算中...' : '计算估值'}
-          </Button>
-        </form>
-
-        {error && (
-          <Alert variant="destructive" className="mt-4">
-            <AlertTitle>错误</AlertTitle>
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-
-        {result && (
-          <div className="mt-6 space-y-4">
-            <h3 className="text-lg font-semibold">估值结果</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <div className="text-sm text-gray-600">当前净利润</div>
-                <div className="text-lg font-semibold">{formatNumber(result.net_profit)}</div>
-              </div>
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <div className="text-sm text-gray-600">当前市值</div>
-                <div className="text-lg font-semibold">{formatNumber(result.market_cap)}</div>
-              </div>
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <div className="text-sm text-gray-600">{result.years}年后估值</div>
-                <div className="text-lg font-semibold">{formatNumber(result.future_value)}</div>
-              </div>
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <div className="text-sm text-gray-600">折现后总值</div>
-                <div className="text-lg font-semibold">{formatNumber(result.present_value)}</div>
-              </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">公司名称</label>
+              <SelectWrapper
+                options={companyNames}
+                onChange={handleCompanyNameChange}
+                placeholder="请输入公司名称"
+                isClearable
+                value={companyNames.find(option => option.value === formData.companyName) || null}
+                classNamePrefix="company-select"
+              />
             </div>
             
-            <Alert className={result.valuation_level < 1 ? 'bg-red-50' : 'bg-green-50'}>
-              <AlertTitle>估值水平: {result.valuation_level.toFixed(2)}</AlertTitle>
-              <AlertDescription>
-                {result.valuation_level < 1 
-                  ? '当前股价可能偏高，建议谨慎投资。' 
-                  : '当前股价可能存在上涨空间。'}
-              </AlertDescription>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">存续时长</label>
+                <Input
+                  type="text"
+                  value={formData.years}
+                  onChange={(e) => handleInputChange(e, 'years')}
+                  placeholder="10"
+                  required
+                  min="1"
+                  pattern="\d*"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label className="text-sm font-medium">增长率(%)</label>
+                <Input
+                  type="text"
+                  value={formData.growthRate}
+                  onChange={(e) => handleInputChange(e, 'growthRate')}
+                  placeholder="15"
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label className="text-sm font-medium">折现率(%)</label>
+                <Input
+                  type="text"
+                  value={formData.discountRate}
+                  onChange={(e) => handleInputChange(e, 'discountRate')}
+                  placeholder="3"
+                  required
+                />
+              </div>
+            </div>
+
+            <Button 
+              type="submit" 
+              className="w-full" 
+              disabled={loading}
+              onClick={() => console.log('Button clicked')}
+            >
+              {loading ? '计算中...' : '计算估值'}
+            </Button>
+          </form>
+
+          {error && (
+            <Alert variant="destructive" className="mt-4">
+              <AlertTitle>错误</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
             </Alert>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+          )}
+
+          {result && (
+            <div className="mt-6 space-y-4">
+              <h3 className="text-lg font-semibold">估值结果</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="text-sm text-gray-600">当前净利润</div>
+                  <div className="text-lg font-semibold">{formatNumber(result.net_profit)}</div>
+                </div>
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="text-sm text-gray-600">当前市值</div>
+                  <div className="text-lg font-semibold">{formatNumber(result.market_cap)}</div>
+                </div>
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="text-sm text-gray-600">{result.years}年后估值</div>
+                  <div className="text-lg font-semibold">{formatNumber(result.future_value)}</div>
+                </div>
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="text-sm text-gray-600">折现后总值</div>
+                  <div className="text-lg font-semibold">{formatNumber(result.present_value)}</div>
+                </div>
+              </div>
+              
+              <Alert className={result.valuation_level < 1 ? 'bg-red-50' : 'bg-green-50'}>
+                <AlertTitle>估值水平: {result.valuation_level.toFixed(2)}</AlertTitle>
+                <AlertDescription>
+                  {result.valuation_level < 1 
+                    ? '当前股价可能偏高，建议谨慎投资。' 
+                    : '当前股价可能存在上涨空间。'}
+                </AlertDescription>
+              </Alert>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <div className="fixed bottom-0 left-0 w-full text-center text-sm text-gray-500 bg-white py-2">
+        备案号：陕ICP备2024054006号
+      </div>
+    </div>
   );
 };
 
