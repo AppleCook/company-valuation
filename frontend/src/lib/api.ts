@@ -1,4 +1,6 @@
-const API_BASE_URL = 'https://guibugui.cn';
+const API_BASE_URL = process.env.NODE_ENV === 'development' 
+  ? 'http://localhost:8000'
+  : 'https://guibugui.cn';
 
 export interface ValuationRequest {
   company_name: string;
@@ -7,7 +9,7 @@ export interface ValuationRequest {
   discount_rate: number;
 }
 
-export interface ValuationResult {
+export type ValuationResult = {
   company_name: string;
   net_profit: number;
   market_cap: number;
@@ -17,11 +19,12 @@ export interface ValuationResult {
   years: number;
   growth_rate: number;
   discount_rate: number;
-}
+  valuation_status: '高估' | '低估';
+  valuation_ratio: number;
+};
 
 export async function calculateValuation(data: ValuationRequest): Promise<ValuationResult> {
   try {
-    console.log('Sending request:', data);
     const response = await fetch(`${API_BASE_URL}/api/calculate-valuation`, {
       method: 'POST',
       headers: {
@@ -29,28 +32,16 @@ export async function calculateValuation(data: ValuationRequest): Promise<Valuat
         'Accept': 'application/json',
       },
       mode: 'cors',
-      credentials: 'omit', // 明确不发送凭证
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     });
 
-    console.log('Response status:', response.status);
-
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Error response:', errorText);
-      try {
-        const errorData = JSON.parse(errorText);
-        throw new Error(errorData.detail || '计算估值时发生错误');
-      } catch {
-        throw new Error(errorText || '计算估值时发生错误');
-      }
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const result = await response.json();
-    console.log('Received response:', result);
-    return result;
+    return await response.json();
   } catch (error) {
-    console.error('API error:', error);
+    console.error('API error details:', error);
     throw error;
   }
 }

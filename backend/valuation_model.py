@@ -89,12 +89,20 @@ class ValuationModel:
             print(f"同期公司预期利润: {future_profit/100000000:.2f}亿元")
 
             # 计算估值水平
-            valuation_level = market_cap / present_value 
+            if present_value < market_cap:
+                # 高估情况：计算高估率
+                valuation_ratio = 1 - (present_value / market_cap)
+                valuation_status = "高估"
+            else:
+                # 低估情况：计算低估率
+                valuation_ratio = (present_value - market_cap) / market_cap
+                valuation_status = "低估"
 
             print("\n估值分析结果:")
             print("-" * 50)
-            print(f"估值水平: {valuation_level:.2f}")
-            print(f"投资建议: {'低估' if valuation_level > 1 else '高估'}")
+            print(f"折现估值: {present_value/100000000:.2f}亿元")
+            print(f"当前市值: {market_cap/100000000:.2f}亿元")
+            print(f"{valuation_status}率: {valuation_ratio:.2%}")
 
             return {
                 'company_name': company_name,
@@ -103,7 +111,8 @@ class ValuationModel:
                 'future_value': float(future_profit),
                 'present_value': float(present_value),
                 'risk_free_return': float(risk_free_return),
-                'valuation_level': float(valuation_level),
+                'valuation_ratio': float(valuation_ratio),
+                'valuation_status': valuation_status,
                 'years': years,
                 'growth_rate': growth_rate,
                 'discount_rate': discount_rate

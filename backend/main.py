@@ -88,6 +88,7 @@ if __name__ == "__main__":
         "https://guibugui.cn",
         "https://www.guibugui.cn",
         "http://localhost:3000",
+        "http://localhost:3000"
     ]
     
     # 配置日志

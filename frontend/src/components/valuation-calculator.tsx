@@ -208,12 +208,16 @@ const ValuationCalculator = () => {
                 </div>
               </div>
               
-              <Alert className={result.valuation_level < 1 ? 'bg-red-50' : 'bg-green-50'}>
-                <AlertTitle>估值水平: {result.valuation_level.toFixed(2)}</AlertTitle>
+              <Alert className={result.valuation_status === '高估' ? 'bg-red-50' : 'bg-green-50'}>
+                <AlertTitle>
+                  估值分析: {result.valuation_status} 
+                  ({(result.valuation_ratio * 100).toFixed(2)}%)
+                </AlertTitle>
                 <AlertDescription>
-                  {result.valuation_level < 1 
-                    ? '当前股价可能偏高，建议谨慎投资。' 
-                    : '当前股价可能存在上涨空间。'}
+                  {result.valuation_status === '高估'
+                    ? `当前股价高估${(result.valuation_ratio * 100).toFixed(2)}%，建议谨慎投资。`
+                    : `当前股价低估${(result.valuation_ratio * 100).toFixed(2)}%，可能存在投资机会。`
+                  }
                 </AlertDescription>
               </Alert>
             </div>
