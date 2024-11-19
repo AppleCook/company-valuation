@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://0.0.0.0:8000';
+const API_BASE_URL = 'https://guibugui.cn/';
 
 export interface ValuationRequest {
   company_name: string;

@@ -110,7 +110,7 @@ const ValuationCalculator = () => {
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>公司估值计算器1111</CardTitle>
+        <CardTitle>公司估值计算器</CardTitle>
       </CardHeader>
       <CardContent>
         <form 
