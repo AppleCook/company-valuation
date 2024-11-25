@@ -1,0 +1,46 @@
+2024-11-20 18:25:11,194 - WARNING - 无法获取随机User-Agent: FakeUserAgent.__init__() got an unexpected keyword argument 'verify_ssl'
+2024-11-20 18:25:11,194 - INFO - ====== WebDriver manager ======
+2024-11-20 18:25:11,589 - INFO - Get LATEST chromedriver version for google-chrome
+2024-11-20 18:25:12,152 - INFO - Get LATEST chromedriver version for google-chrome
+2024-11-20 18:25:12,481 - INFO - There is no [mac64] chromedriver "131.0.6778.85" for browser google-chrome "131.0.6778" in cache
+2024-11-20 18:25:12,493 - INFO - Get LATEST chromedriver version for google-chrome
+2024-11-20 18:25:13,336 - INFO - WebDriver version 131.0.6778.85 selected
+2024-11-20 18:25:13,338 - INFO - Modern chrome version https://storage.googleapis.com/chrome-for-testing-public/131.0.6778.85/mac-x64/chromedriver-mac-x64.zip
+2024-11-20 18:25:13,338 - INFO - About to download new driver from https://storage.googleapis.com/chrome-for-testing-public/131.0.6778.85/mac-x64/chromedriver-mac-x64.zip
+2024-11-20 18:25:13,834 - INFO - Driver downloading response is 200
+2024-11-20 18:25:14,860 - INFO - Get LATEST chromedriver version for google-chrome
+2024-11-20 18:25:15,292 - INFO - Driver has been saved in cache [/Users/tom/.wdm/drivers/chromedriver/mac64/131.0.6778.85]
+2024-11-20 18:25:17,209 - INFO - 开始扫描关键词: 测试关键词1
+2024-11-20 18:25:33,289 - ERROR - 获取笔记数据失败: Message: 
+
+2024-11-20 18:25:34,561 - INFO - 开始扫描关键词: 测试关键词2
+2024-11-20 18:25:49,475 - ERROR - 获取笔记数据失败: Message: 
+
+2024-11-20 18:25:51,685 - INFO - ====== WebDriver manager ======
+2024-11-20 18:25:52,236 - INFO - Get LATEST chromedriver version for google-chrome
+2024-11-20 18:25:52,589 - INFO - Get LATEST chromedriver version for google-chrome
+2024-11-20 18:25:52,930 - INFO - Driver [/Users/tom/.wdm/drivers/chromedriver/mac64/131.0.6778.85/chromedriver-mac-x64/chromedriver] found in cache
+2024-11-20 18:27:20,656 - WARNING - 无法获取随机User-Agent: FakeUserAgent.__init__() got an unexpected keyword argument 'verify_ssl'
+2024-11-20 18:27:20,657 - INFO - ====== WebDriver manager ======
+2024-11-20 18:27:21,081 - INFO - Get LATEST chromedriver version for google-chrome
+2024-11-20 18:27:21,459 - INFO - Get LATEST chromedriver version for google-chrome
+2024-11-20 18:27:23,941 - INFO - Driver [/Users/tom/.wdm/drivers/chromedriver/mac64/131.0.6778.85/chromedriver-mac-x64/chromedriver] found in cache
+2024-11-20 18:27:25,185 - INFO - 开始扫描关键词: 护肤品
+2024-11-20 18:27:41,280 - ERROR - 获取笔记数据失败: Message: 
+
+2024-11-20 18:27:42,301 - INFO - 开始扫描关键词: 蛋白粉
+2024-11-20 18:27:56,019 - ERROR - 获取笔记数据失败: Message: 
+
+2024-11-20 18:27:57,632 - INFO - 开始扫描关键词: 咖啡
+2024-11-20 18:28:12,402 - ERROR - 获取笔记数据失败: Message: 
+
+2024-11-20 18:28:15,281 - INFO - 开始扫描关键词: 化妆刷
+2024-11-20 18:28:30,386 - ERROR - 获取笔记数据失败: Message: 
+
+2024-11-20 18:28:32,143 - INFO - 开始扫描关键词: 洗面奶
+2024-11-20 18:28:48,118 - ERROR - 获取笔记数据失败: Message: 
+
+2024-11-20 18:28:50,943 - INFO - ====== WebDriver manager ======
+2024-11-20 18:28:51,534 - INFO - Get LATEST chromedriver version for google-chrome
+2024-11-20 18:28:52,079 - INFO - Get LATEST chromedriver version for google-chrome
+2024-11-20 18:28:52,531 - INFO - Driver [/Users/tom/.wdm/drivers/chromedriver/mac64/131.0.6778.85/chromedriver-mac-x64/chromedriver] found in cache
