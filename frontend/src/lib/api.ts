@@ -31,6 +31,7 @@ export async function calculateValuation(data: ValuationRequest): Promise<Valuat
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
+      credentials: 'omit',
       mode: 'cors',
       body: JSON.stringify(data)
     });

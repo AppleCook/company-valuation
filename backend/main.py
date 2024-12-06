@@ -6,23 +6,23 @@ from financial_processor import FinancialDataProcessor
 from valuation_model import ValuationModel
 
 app = FastAPI(title="Company Valuation API")
-
-origins = [
-    "http://localhost:3000",    # Next.js 开发服务器
-    "http://127.0.0.1:3000",    # 使用 IP 地址访问的情况
-    "https://guibugui.cn",
-    "https://www.guibugui.cn",
-    "47.109.207.199"
-]
-
 # 更新 CORS 配置
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # 允许的源
-    allow_methods=["*"],    # 允许所有方法
-    allow_headers=["*"],    # 允许所有头部
-    allow_credentials=True, # 允许携带凭证
-    expose_headers=["*"]    # 暴露所有头部
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:3000",
+        "https://guibugui.cn",
+        "https://www.guibugui.cn",
+        "http://47.109.207.199",
+        "https://47.109.207.199"
+    ],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Accept"],
+    expose_headers=["Content-Type"]
 )
 
 class ValuationRequest(BaseModel):
@@ -33,17 +33,6 @@ class ValuationRequest(BaseModel):
 
 financial_processor = FinancialDataProcessor()
 valuation_model = ValuationModel(financial_processor)
-
-@app.options("/api/calculate-valuation")
-async def options_handler():
-    return JSONResponse(
-        content={"message": "OK"},
-        headers={
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type",
-        }
-    )
 
 @app.post("/api/calculate-valuation")
 async def calculate_valuation(request: ValuationRequest):
@@ -61,14 +50,7 @@ async def calculate_valuation(request: ValuationRequest):
             raise HTTPException(status_code=400, detail=error)
         
         print(f"Calculation result: {result}")
-        return JSONResponse(
-            content=result,
-            headers={
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-                "Access-Control-Allow-Headers": "Content-Type",
-            }
-        )
+        return result  # 直接返回结果，FastAPI 会自动处理 CORS
     except Exception as e:
         print(f"Exception occurred: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
